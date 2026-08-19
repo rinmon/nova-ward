@@ -62,6 +62,8 @@ function updateHud(data) {
 
 engine.onHud = updateHud;
 engine.onGameOver = ({ score, wave }) => {
+  audio.stopPad();
+  audio.gameOver();
   document.getElementById("final-score").textContent = score.toLocaleString();
   const rec = isHighScore(score);
   document.getElementById("new-record").classList.toggle("hidden", !rec);
@@ -70,6 +72,8 @@ engine.onGameOver = ({ score, wave }) => {
 
 document.getElementById("btn-start").addEventListener("click", () => {
   audio.ensure();
+  audio.ui();
+  audio.startPad();
   engine.startPlaying();
   showPanel(null);
 });
@@ -77,32 +81,39 @@ document.getElementById("btn-start").addEventListener("click", () => {
 document.getElementById("btn-pause").addEventListener("click", () => {
   if (engine.state === "playing") {
     engine.pause();
+    audio.ui();
     showPanel("pause");
   }
 });
 
 document.getElementById("btn-resume").addEventListener("click", () => {
   engine.resume();
+  audio.ui();
+  audio.startPad();
   showPanel(null);
 });
 
 document.getElementById("btn-restart").addEventListener("click", () => {
+  audio.startPad();
   engine.startPlaying();
   showPanel(null);
 });
 
 document.getElementById("btn-quit").addEventListener("click", () => {
+  audio.stopPad();
   engine.state = "title";
   showPanel("start");
   hud.classList.add("hidden");
 });
 
 document.getElementById("btn-retry").addEventListener("click", () => {
+  audio.startPad();
   engine.startPlaying();
   showPanel(null);
 });
 
 document.getElementById("btn-title").addEventListener("click", () => {
+  audio.stopPad();
   engine.state = "title";
   showPanel("start");
   hud.classList.add("hidden");
@@ -163,6 +174,27 @@ function frame(now) {
 
   requestAnimationFrame(frame);
 }
+
+const muteBtn = document.getElementById("btn-mute");
+function refreshMuteLabel() {
+  if (muteBtn) muteBtn.textContent = audio.muted ? "ミュート解除" : "ミュート";
+}
+if (muteBtn) {
+  muteBtn.addEventListener("click", () => {
+    audio.ensure();
+    audio.toggleMute();
+    if (!audio.muted && engine.state === "playing") audio.startPad();
+    refreshMuteLabel();
+  });
+}
+window.addEventListener("keydown", (e) => {
+  if (e.key.toLowerCase() === "m") {
+    audio.ensure();
+    audio.toggleMute();
+    if (!audio.muted && engine.state === "playing") audio.startPad();
+    refreshMuteLabel();
+  }
+});
 
 showPanel("start");
 hud.classList.add("hidden");
