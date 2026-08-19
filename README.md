@@ -15,16 +15,19 @@
 - パララックス・スターフィールド
 - キーボード（WASD / 矢印）とマウス・タッチ操作
 
-## 遊び方
+## 遊び方（Mac）
 
 ```bash
-# ローカルで開く（どれか一つ）
-open index.html          # macOS
-npx serve .              # 静的サーバ
-python3 -m http.server   # 任意ポート
+git clone https://github.com/rinmon/nova-ward.git
+cd nova-ward
+
+# どれか一つ
+open index.html
+npx --yes serve .
+python3 -m http.server 8080
 ```
 
-ブラウザで `index.html` を開き、**出撃** を押す。
+ブラウザで開き、**出撃** を押す。
 
 | 操作 | 内容 |
 | --- | --- |
@@ -39,11 +42,12 @@ python3 -m http.server   # 任意ポート
 index.html
 css/style.css
 js/
-  main.js      # UI・ループ
-  engine.js    # ゲーム本体
-  input.js     # 入力
-  audio.js     # SFX
-  scores.js    # ハイスコア
+  main.js         # UI・ループ
+  engine.js       # 描画レイヤー
+  engine-core.js  # シミュレーション本体
+  input.js        # 入力
+  audio.js        # SFX
+  scores.js       # ハイスコア
 ```
 
 依存パッケージなし。ES modules の静的サイトです。
